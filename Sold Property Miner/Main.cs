@@ -17,25 +17,31 @@ namespace Sold_Property_Miner
 {
     public partial class Main : Form
     {
+        #region Main Variables
         /* Main Public Data Types/Objects used in the App */
         List<SoldProperty> soldProperties;
         HashSet<string> setSuburbs = new HashSet<string>();
         HashSet<string> setDuplicateSoldPropertiesCheck = new HashSet<string>();
         int suburbCounter = 0;
-        /* Defines Main Application Confieration Files */
-        const string pathConfig = "./Data/App_config.cfg";
 
+        /* Defines Main Application Configeration Files */
+        const string pathConfig = "./Data/App_config.cfg";
+        #endregion
+
+        #region Constructor & Main
         public Main()
         {
             InitializeComponent();
         }
-
+        
         private void Main_Load(object sender, EventArgs e)
         {
             /* Makes sure All aplication configeration Files exist if not creates them */
             loadApplicationAndDataFiles();
         }
+        #endregion
 
+        #region Pre-Load Settings & Configeration
         private void loadApplicationAndDataFiles()
         {
             /* Makes sure All aplication configeration Files exist if not creates them */
@@ -47,6 +53,7 @@ namespace Sold_Property_Miner
                 sw.Close();
             }
             laodAppConfig();
+            /* Creates Default config with basic Values */
             if (!File.Exists(txtSuburbsFilePath.Text))
             {
                 StreamWriter sw = File.AppendText(txtSuburbsFilePath.Text);
@@ -91,7 +98,9 @@ namespace Sold_Property_Miner
             }
             file.Close();
         }
+        #endregion
 
+        #region Change/Edit Suburb List Config File
         private void btnFileExplore_Click(object sender, EventArgs e)
         {
             /* Saves the File location of the CSV Database File */
@@ -117,26 +126,44 @@ namespace Sold_Property_Miner
             }
         }
 
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            nudNumSearchRecords.Value = 0;
+            Process.Start("notepad.exe", txtSuburbsFilePath.Text);
+        }
+        #endregion
+
+        #region Start Run Property Miner
         private void btnStartMining_Click(object sender, EventArgs e)
         {
+            /* Starts Mining Thread - Free up GUI Thread */
+            startMining();
+        }
+
+        private void startMining()
+        {
             /* Runs all mining functions */
-            if(nudNumSearchRecords.Value != 0)
+            if (nudNumSearchRecords.Value != 0)
             {
                 pnlNotice1.Visible = false;
                 btnFileExplore.Enabled = true;
                 btnStartMining.Enabled = false;
                 toolStatus.Text = "Processing. . . . . . . . .";
                 toolStatus.ForeColor = System.Drawing.Color.FromArgb(255, 128, 0);
-                backgroundWorker1.RunWorkerAsync();
-            } else
+                
+                /* Main Maining Thread */
+                miningThread.RunWorkerAsync();
+            }
+            else
             {
                 /* Make user select Page number */
                 pnlNotice1.Visible = true;
                 MessageBox.Show("Please select number of pages per suburb to search! \nNote: Approx 20 Results per page for each suburb.\n\nTry 1 Page First if unsure.");
             }
-
         }
+        #endregion
 
+        #region HTTPWebRequest & Text Manipulation
         private string getHTMLSourceCode(string urlAddress)
         {
             /* Returns HTML Source Code of Selected URL Address */
@@ -180,7 +207,7 @@ namespace Sold_Property_Miner
             List<string> rawPropertyData;
             string startStr = "results-card residential-card";
             string endStr = "Save";
-            rawPropertyData = ExtractFromString(sourceCode, startStr, endStr);
+            rawPropertyData = Helper.ExtractFromString(sourceCode, startStr, endStr);
 
             /* Seperates Raw data into meaningful Sold Property Data List */
             return breakRawPropertyData(rawPropertyData);
@@ -270,36 +297,10 @@ namespace Sold_Property_Miner
             }
             return soldPropertiesTemp;
         }
+        #endregion
 
-        private List<SoldProperty> getSoldPropertyData(int num, string strSuburbName)
-        {
-            /* All Functions Used to Collect Sold Property Data */
-            string sourceCode = getHTMLSourceCode("https://www.realestate.com.au/sold/in-" + strSuburbName + "/list-" + num + "?activeSort=solddate");
-            return filterSiteSourceCode(sourceCode);
-        }
-
-        private static List<string> ExtractFromString(string text, string startString, string endString)
-        {
-            List<string> matched = new List<string>();
-            int indexStart = 0, indexEnd = 0;
-            bool exit = false;
-            while (!exit)
-            {
-                indexStart = text.IndexOf(startString);
-                indexEnd = text.IndexOf(endString);
-                if (indexStart != -1 && indexEnd != -1)
-                {
-                    matched.Add(text.Substring(indexStart + startString.Length,
-                        indexEnd - indexStart - startString.Length));
-                    text = text.Substring(indexEnd + endString.Length);
-                }
-                else
-                    exit = true;
-            }
-            return matched;
-        }
-
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        #region Mining Thread Work & Reporting
+        private void miningThread_DoWork(object sender, DoWorkEventArgs e)
         {
             /* Runs all mining functions */
             List<SoldProperty> temp = new List<SoldProperty>();
@@ -316,7 +317,7 @@ namespace Sold_Property_Miner
                     /* Report Progress to Progress Bar */
                     int y = x + index;
                     num = y * 100 / (numOfSearchRecordPages * suburbCounter);
-                    backgroundWorker1.ReportProgress(num);
+                    miningThread.ReportProgress(num);
 
                     temp.AddRange(getSoldPropertyData(x, suburbName));
 
@@ -338,7 +339,26 @@ namespace Sold_Property_Miner
             e.Result = temp;
         }
 
-        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private List<SoldProperty> getSoldPropertyData(int num, string strSuburbName)
+        {
+            /* All Functions Used to Collect Sold Property Data */
+            string sourceCode = getHTMLSourceCode("https://www.realestate.com.au/sold/in-" + strSuburbName + "/list-" + num + "?activeSort=solddate");
+            return filterSiteSourceCode(sourceCode);
+        }
+
+        private void miningThread_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            if (e.ProgressPercentage > 100)
+            {
+                /* Out Of percent Boundries */
+            }
+            else
+            {
+                toolStripProgressBar1.Value = e.ProgressPercentage;
+            }
+        }
+
+        private void miningThread_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             /* Updates the Status bar as Completed */
             toolStatus.Text = "Complete";
@@ -388,29 +408,9 @@ namespace Sold_Property_Miner
             dataDisplay.Columns[0].DefaultCellStyle.Format = "c";
             btnStartMining.Enabled = true;
         }
+        #endregion
 
-        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            if (e.ProgressPercentage > 100)
-            {
-                /* Out Of percent Boundries */
-            } else
-            {
-                toolStripProgressBar1.Value = e.ProgressPercentage;
-            }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            nudNumSearchRecords.Value = 0;
-            Process.Start("notepad.exe", txtSuburbsFilePath.Text);
-        }
-
-        private void dudNumSearchRecords_SelectedItemChanged(object sender, EventArgs e)
-        {
-
-        }
-
+        #region About & Extra 
         private void nudNumSearchRecords_ValueChanged(object sender, EventArgs e)
         {
             /* Calculates Results Estimate */
@@ -425,11 +425,6 @@ namespace Sold_Property_Miner
         {
             About abt = new About();
             abt.Show();
-        }
-
-        private void mainTabControl_TabIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void mainTabControl_Selected(object sender, TabControlEventArgs e)
@@ -453,11 +448,8 @@ namespace Sold_Property_Miner
                 /* Sets the Graph Title */
                 chartDisplay.Titles.Clear();
                 chartDisplay.Titles.Add(cmbSuburbs.Text);
-
-
             }
         }
-
-
+    #endregion
     }
 }

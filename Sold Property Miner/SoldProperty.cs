@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sold_Property_Miner
 {
+    /* Sold Property Object */
     class SoldProperty
     {
         public string soldPrice { get; set; }

@@ -46,7 +46,7 @@
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnEdit = new System.Windows.Forms.Button();
             this.txtSuburbsFilePath = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.btnFileExplore = new System.Windows.Forms.Button();
@@ -70,15 +70,15 @@
             this.colNumBedrooms = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colNumBathrooms = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colNumCarPorts = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.miningThread = new System.ComponentModel.BackgroundWorker();
             this.mainTabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.chartDisplay = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.label5 = new System.Windows.Forms.Label();
-            this.cmbSuburbs = new System.Windows.Forms.ComboBox();
             this.btnGraph = new System.Windows.Forms.Button();
+            this.cmbSuburbs = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.chartDisplay = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -92,8 +92,8 @@
             this.mainTabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chartDisplay)).BeginInit();
             this.panel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartDisplay)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -226,7 +226,7 @@
             // groupBox1
             // 
             this.groupBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.btnEdit);
             this.groupBox1.Controls.Add(this.txtSuburbsFilePath);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.btnFileExplore);
@@ -240,16 +240,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Settings";
             // 
-            // button1
+            // btnEdit
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(530, 63);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(93, 23);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "Edit";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnEdit.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEdit.Location = new System.Drawing.Point(530, 63);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(93, 23);
+            this.btnEdit.TabIndex = 5;
+            this.btnEdit.Text = "Edit";
+            this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
             // txtSuburbsFilePath
             // 
@@ -459,12 +459,12 @@
             this.colNumCarPorts.HeaderText = "Number Of Car Ports";
             this.colNumCarPorts.Name = "colNumCarPorts";
             // 
-            // backgroundWorker1
+            // miningThread
             // 
-            this.backgroundWorker1.WorkerReportsProgress = true;
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            this.miningThread.WorkerReportsProgress = true;
+            this.miningThread.DoWork += new System.ComponentModel.DoWorkEventHandler(this.miningThread_DoWork);
+            this.miningThread.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.miningThread_ProgressChanged);
+            this.miningThread.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.miningThread_RunWorkerCompleted);
             // 
             // mainTabControl
             // 
@@ -479,7 +479,6 @@
             this.mainTabControl.Size = new System.Drawing.Size(1131, 392);
             this.mainTabControl.TabIndex = 7;
             this.mainTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.mainTabControl_Selected);
-            this.mainTabControl.TabIndexChanged += new System.EventHandler(this.mainTabControl_TabIndexChanged);
             // 
             // tabPage1
             // 
@@ -504,6 +503,49 @@
             this.tabPage2.Text = "Graph";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // panel5
+            // 
+            this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel5.BackColor = System.Drawing.Color.Black;
+            this.panel5.Controls.Add(this.btnGraph);
+            this.panel5.Controls.Add(this.cmbSuburbs);
+            this.panel5.Controls.Add(this.label5);
+            this.panel5.Location = new System.Drawing.Point(10, 10);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(1099, 27);
+            this.panel5.TabIndex = 1;
+            // 
+            // btnGraph
+            // 
+            this.btnGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGraph.Location = new System.Drawing.Point(319, 1);
+            this.btnGraph.Name = "btnGraph";
+            this.btnGraph.Size = new System.Drawing.Size(169, 24);
+            this.btnGraph.TabIndex = 2;
+            this.btnGraph.Text = "Generate Graph";
+            this.btnGraph.UseVisualStyleBackColor = true;
+            this.btnGraph.Click += new System.EventHandler(this.btnGraph_Click);
+            // 
+            // cmbSuburbs
+            // 
+            this.cmbSuburbs.FormattingEnabled = true;
+            this.cmbSuburbs.Location = new System.Drawing.Point(131, 2);
+            this.cmbSuburbs.Name = "cmbSuburbs";
+            this.cmbSuburbs.Size = new System.Drawing.Size(182, 21);
+            this.cmbSuburbs.TabIndex = 1;
+            this.cmbSuburbs.Text = "* Select Suburb";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.ForeColor = System.Drawing.Color.White;
+            this.label5.Location = new System.Drawing.Point(5, 7);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(117, 13);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "Select suburb to graph:";
+            // 
             // chartDisplay
             // 
             this.chartDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -523,49 +565,6 @@
             this.chartDisplay.TabIndex = 0;
             this.chartDisplay.Text = "chart1";
             // 
-            // panel5
-            // 
-            this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel5.BackColor = System.Drawing.Color.Black;
-            this.panel5.Controls.Add(this.btnGraph);
-            this.panel5.Controls.Add(this.cmbSuburbs);
-            this.panel5.Controls.Add(this.label5);
-            this.panel5.Location = new System.Drawing.Point(10, 10);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(1099, 27);
-            this.panel5.TabIndex = 1;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(5, 7);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(117, 13);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "Select suburb to graph:";
-            // 
-            // cmbSuburbs
-            // 
-            this.cmbSuburbs.FormattingEnabled = true;
-            this.cmbSuburbs.Location = new System.Drawing.Point(131, 2);
-            this.cmbSuburbs.Name = "cmbSuburbs";
-            this.cmbSuburbs.Size = new System.Drawing.Size(182, 21);
-            this.cmbSuburbs.TabIndex = 1;
-            this.cmbSuburbs.Text = "* Select Suburb";
-            // 
-            // btnGraph
-            // 
-            this.btnGraph.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGraph.Location = new System.Drawing.Point(319, 1);
-            this.btnGraph.Name = "btnGraph";
-            this.btnGraph.Size = new System.Drawing.Size(169, 24);
-            this.btnGraph.TabIndex = 2;
-            this.btnGraph.Text = "Generate Graph";
-            this.btnGraph.UseVisualStyleBackColor = true;
-            this.btnGraph.Click += new System.EventHandler(this.btnGraph_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -580,7 +579,7 @@
             this.Controls.Add(this.panel3);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main";
-            this.Text = "Sold Property Miner - Ver 1.0";
+            this.Text = "Sold Property Miner";
             this.Load += new System.EventHandler(this.Main_Load);
             this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
@@ -599,9 +598,9 @@
             this.mainTabControl.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.chartDisplay)).EndInit();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartDisplay)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -635,11 +634,11 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ToolStripStatusLabel toolStatus;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.ComponentModel.BackgroundWorker miningThread;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.TextBox txtSuburbsFilePath;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Label lblApproxResults;
         private System.Windows.Forms.Label label3;
