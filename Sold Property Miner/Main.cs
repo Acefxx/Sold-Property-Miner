@@ -166,14 +166,57 @@ namespace Sold_Property_Miner
         #region HTTPWebRequest & Text Manipulation
         private string getHTMLSourceCode(string urlAddress)
         {
+
             /* Returns HTML Source Code of Selected URL Address */
             string data = string.Empty;
             try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+             {
 
-                if (response.StatusCode == HttpStatusCode.OK)
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
+            
+            request.Method = "GET";
+
+            /* Raw Header and Cookie Data Test */
+            ////request.ContentType = "text/html; charset=utf-8";
+            //request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36";
+            //request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3";
+
+            /////* Adds cookie */
+            //request.CookieContainer = new CookieContainer();
+            ////request.CookieContainer.Add(new Cookie("_cb_ls", "1") { Domain = "www.realestate.com.au" });
+            ////request.CookieContainer.Add(new Cookie("_cb", "VSlV6D-JuNXC0IeFB") { Domain = "www.realestate.com.au" });
+            ////request.CookieContainer.Add(new Cookie("Country", "AU") { Domain = "www.realestate.com.au" });
+            ////request.CookieContainer.Add(new Cookie("s_cc", "true") { Domain = "www.realestate.com.au" });
+
+            //request.CookieContainer.Add(new Cookie("reauid", "4ef466687b5600002f38d75d6f030000cccf0f00") { Domain = "www.realestate.com.au" });
+            //request.CookieContainer.Add(new Cookie("Country", "AU") { Domain = "www.realestate.com.au" });
+            //request.CookieContainer.Add(new Cookie("ak_bmcs", "2d43a97a-050c-3634-b63c-9b41ab6300a4") { Domain = "www.realestate.com.au" });
+            //request.CookieContainer.Add(new Cookie("kmam_lapoz", "zGlUuF%2F3ONdzjCfL3K2kHw%3D%3D%3A%3AghZiRB3HzxFbPTgP5KCJ906rcaKgR%2BTzmDReCflX2AcfZ8B4dEFZCxb4B4iNS9CjmlR%2BJmYdix84r8QJLKGt4DN0rOXaUFnXXHBMX3ecGBdbqHVe5DJ5Jw8UBZHdODV461ZE6ECS0EsKmW4rFovFiDYlgte77mj9oGLXi6CQdSof79WDn0El50XMrC3Cr1bVCQU4sgMhIFeCaM%2BEI%2B%2BxOFDcHldyhithEFDPIrkWAHXwPFzyDwCxNV%2BJqf%2BKmqt%2BAPWvbKF52Bm9EuNncjDFOXFtwdA2SXUtYLm1Wrz9GWUO8yeIRuvMeBY3gJwRRMIdxqKcuITYzpg3w9%2FS06KdPQwZbI3OnL2uX9CNDAjemtC%2B1tDW72DKhSIGX0mTJ%2FL89Ras7Iycu0UeL%2F4H31%2Bb0u9Hp2MRS8Dt2oyQusqAACKyRjM5BZyJS7JHkRVFCj9c1sboFijpEJtodtIM0wCNVpEx5vDFofFshFSDkVYd5OvB7lDynPx3UHKzAUtgneDoscfc7SKHL0%2BSU89qacMCdQ%3D%3D") { Domain = "www.realestate.com.au" });
+
+            //WebHeaderCollection myWebHeaderCollection = request.Headers;
+            ////myWebHeaderCollection.Add("Cache-Control:max-age=0");
+            ////myWebHeaderCollection.Add("Accept-Encoding:gzip, deflate, br");
+            ////myWebHeaderCollection.Add("Accept-Language: en-GB,en;q=0.9,en-US;q=0.8,de;q=0.7");
+
+            ////myWebHeaderCollection.Add("Sec-Fetch-Mode: navigate");
+            ////myWebHeaderCollection.Add("Sec-Fetch-Site: none");
+            ////myWebHeaderCollection.Add("Sec-Fetch-User: ?1");
+            ////myWebHeaderCollection.Add("Upgrade-Insecure-Requests: 1");
+
+            //myWebHeaderCollection.Add("Cache-Control: max-age=0");
+            ////request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3";
+            //myWebHeaderCollection.Add("Accept-Encoding: gzip, deflate, br");
+            //myWebHeaderCollection.Add("Accept-Language: en-GB,en;q=0.9,en-US;q=0.8,de;q=0.7");
+            ////myWebHeaderCollection.Add("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36");
+            //myWebHeaderCollection.Add("DNT: 1");
+            //myWebHeaderCollection.Add("Sec-Fetch-Mode: navigate");
+            //myWebHeaderCollection.Add("Sec-Fetch-Site: same-origin");
+            //myWebHeaderCollection.Add("Sec-Fetch-User: ?1");
+            //myWebHeaderCollection.Add("Upgrade-Insecure-Requests: 1");
+
+
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            if (response.StatusCode == HttpStatusCode.OK)
                 {
                     Stream receiveStream = response.GetResponseStream();
                     StreamReader readStream = null;
@@ -184,7 +227,7 @@ namespace Sold_Property_Miner
                     }
                     else
                     {
-                        readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
+                        readStream = new StreamReader(receiveStream, Encoding.UTF8);
                     }
 
                     data = readStream.ReadToEnd();
@@ -192,6 +235,8 @@ namespace Sold_Property_Miner
                     response.Close();
                     readStream.Close();
                 }
+
+
             } catch
             {
                 /* HTML didn't load Possibly due to Lag/Net issues */
@@ -206,7 +251,7 @@ namespace Sold_Property_Miner
             /* Gets Raw Property HTML Data from Realestate.com.au website */
             List<string> rawPropertyData;
             string startStr = "results-card residential-card";
-            string endStr = "Save";
+            string endStr = "listing-bookmark listing-bookmark--search-results";
             rawPropertyData = Helper.ExtractFromString(sourceCode, startStr, endStr);
 
             /* Seperates Raw data into meaningful Sold Property Data List */
@@ -221,7 +266,7 @@ namespace Sold_Property_Miner
                 SoldProperty tempSoldProperty = new SoldProperty();
 
                 /* Grabs Sold Property Price */
-                String result = x.Split(new string[] { "price \" data-reactid" }, StringSplitOptions.None)[1].Split(new string[] { "span" }, StringSplitOptions.None)[0].Trim();
+                String result = x.Split(new string[] { "property-price" }, StringSplitOptions.None)[1].Split(new string[] { "span" }, StringSplitOptions.None)[0].Trim();
                 tempSoldProperty.soldPrice = result.Split('>', '<')[1];
 
                 /* Grabs Property Type */
@@ -229,7 +274,7 @@ namespace Sold_Property_Miner
                 tempSoldProperty.type = result.Split('>', '<')[1];
 
                 /* Grabs Property Address */
-                string tempBreakdown = x.Split(new string[] { "property-image__img" }, StringSplitOptions.None)[1].Split(new string[] { "property-price" }, StringSplitOptions.None)[0].Trim();
+                string tempBreakdown = x.Split(new string[] { "PropertyImage" }, StringSplitOptions.None)[1].Split(new string[] { "property-image__img" }, StringSplitOptions.None)[0].Trim();
                 tempSoldProperty.address = tempBreakdown.Split(new string[] { "alt=\"" }, StringSplitOptions.None)[1].Split(new string[] { "\"" }, StringSplitOptions.None)[0].Trim();
 
                 /* Grabs Property Suburb */
@@ -256,7 +301,7 @@ namespace Sold_Property_Miner
                 try
                 {
                     result = x.Split(new string[] { "general-features__beds" }, StringSplitOptions.None)[1].Split(new string[] { "span" }, StringSplitOptions.None)[0].Trim();
-                    result = result.Split(new string[] { "react-text --><!-- react-text:" }, StringSplitOptions.None)[1].Split(new string[] { "!--" }, StringSplitOptions.None)[0].Trim();
+                    result = result.Split(new string[] { "!-- --" }, StringSplitOptions.None)[1].Split(new string[] { "span" }, StringSplitOptions.None)[0].Trim();
                     tempSoldProperty.bedrooms = Convert.ToInt32(result.Split('>', '<')[1]);
                 } catch
                 {
@@ -268,7 +313,7 @@ namespace Sold_Property_Miner
                 try
                 {
                     result = x.Split(new string[] { "general-features__baths" }, StringSplitOptions.None)[1].Split(new string[] { "span" }, StringSplitOptions.None)[0].Trim();
-                    result = result.Split(new string[] { "react-text --><!-- react-text:" }, StringSplitOptions.None)[1].Split(new string[] { "!--" }, StringSplitOptions.None)[0].Trim();
+                    result = result.Split(new string[] { "!-- --" }, StringSplitOptions.None)[1].Split(new string[] { "span" }, StringSplitOptions.None)[0].Trim();
                     tempSoldProperty.bathrooms = Convert.ToInt32(result.Split('>', '<')[1]);
                 } catch
                 {
@@ -279,7 +324,7 @@ namespace Sold_Property_Miner
                 try
                 {
                     result = x.Split(new string[] { "general-features__cars" }, StringSplitOptions.None)[1].Split(new string[] { "span" }, StringSplitOptions.None)[0].Trim();
-                    result = result.Split(new string[] { "react-text --><!-- react-text:" }, StringSplitOptions.None)[1].Split(new string[] { "!--" }, StringSplitOptions.None)[0].Trim();
+                    result = result.Split(new string[] { "!-- --" }, StringSplitOptions.None)[1].Split(new string[] { "span" }, StringSplitOptions.None)[0].Trim();
                     tempSoldProperty.carPorts = Convert.ToInt32(result.Split('>', '<')[1]);
                 } catch
                 {
@@ -342,7 +387,8 @@ namespace Sold_Property_Miner
         private List<SoldProperty> getSoldPropertyData(int num, string strSuburbName)
         {
             /* All Functions Used to Collect Sold Property Data */
-            string sourceCode = getHTMLSourceCode("https://www.realestate.com.au/sold/in-" + strSuburbName + "/list-" + num + "?activeSort=solddate");
+            string tempWebLink = "https://www.realestate.com.au/sold/in-" + strSuburbName + "%3b/list-" + num + "?activeSort=solddate";
+            string sourceCode = getHTMLSourceCode(tempWebLink);
             return filterSiteSourceCode(sourceCode);
         }
 

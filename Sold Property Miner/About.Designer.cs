@@ -99,7 +99,7 @@
             this.labelVersion.Name = "labelVersion";
             this.labelVersion.Size = new System.Drawing.Size(289, 17);
             this.labelVersion.TabIndex = 0;
-            this.labelVersion.Text = "Version: 1.0";
+            this.labelVersion.Text = "Version: 1.1 Updated December 2019";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelCopyright
@@ -111,7 +111,7 @@
             this.labelCopyright.Name = "labelCopyright";
             this.labelCopyright.Size = new System.Drawing.Size(289, 17);
             this.labelCopyright.TabIndex = 21;
-            this.labelCopyright.Text = "Copyright: 2017";
+            this.labelCopyright.Text = "Copyright: 2017-2020";
             this.labelCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelCompanyName
